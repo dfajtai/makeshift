@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16
+    container_name: makeshift_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ${POSTGRES_VOLUME_PATH}:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7
+    container_name: makeshift_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - ${MONGO_VOLUME_PATH}:/data/db
+
+#  backend:
+#    build:
+#      context: ./backend
+#    container_name: makeshift_backend
+#    depends_on:
+#      - postgres
+#      - mongodb
+#    environment:
+#      # Propagate identification
+#      POSTGRES_DB: ${POSTGRES_DB}
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      MONGO_DB: ${MONGO_DB}
+#      MONGO_USER: ${MONGO_USER}
+#      MONGO_PASSWORD: ${MONGO_PASSWORD}
+#    ports:
+#      - "8080:8080"
+#    working_dir: /app
+#    command: ["java", "-jar", "target/makeshift-0.0.1-SNAPSHOT.jar"]
+#    volumes:
+#      - ./backend:/app
