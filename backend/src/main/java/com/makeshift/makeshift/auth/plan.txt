@@ -1,0 +1,15 @@
+auth/
+├── model/            # Adatmodell entitások és enumok
+│   ├── User.java     # Felhasználó entitás (JPA)
+│   ├── Role.java     # Szerepkör enum vagy entitás
+│
+├── repository/       # JPA repository interfészek
+│   └── UserRepository.java
+│
+├── service/          # Szolgáltatások, UserDetailsService implementáció
+│   └── CustomUserDetailsService.java
+│
+├── security/         # Biztonsági konfiguráció, SecurityConfig.java
+│   └── SecurityConfig.java
+│
+└── util/             # Opcionálisan auth-hoz kapcsolódó segédosztályok (pl. token, helper)

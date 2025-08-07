@@ -25,10 +25,12 @@ services:
     volumes:
       - ${MONGO_VOLUME_PATH}:/data/db
 
-  backend:
+  backend-dev:
+    profiles: ["dev"]
     build:
       context: ./backend
-    container_name: makeshift_backend
+      dockerfile: Dockerfile.dev
+    container_name: makeshift_backend_dev
     depends_on:
       - postgres
       - mongodb
@@ -40,5 +42,38 @@ services:
       MONGO_DB: ${MONGO_DB}
       MONGO_USER: ${MONGO_USER}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_DEVTOOLS_ADD_PROPERTIES: "true"
+
+      SUPERADMIN_USERNAME: ${SUPERADMIN_USERNAME}
+      SUPERADMIN_PASSWORD: ${SUPERADMIN_PASSWORD}
+      SUPERADMIN_ENABLED: ${SUPERADMIN_ENABLED}
+      SUPERADMIN_ROLES: ${SUPERADMIN_ROLES}
     ports:
-      - "8080:8080"
+      - "8081:8080"
+    volumes:
+      - ./backend:/app
+      - ~/.m2:/root/.m2
+
+  backend-prod:
+    profiles: ["prod"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: makeshift_backend_prod
+    depends_on:
+      - postgres
+      - mongodb
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MONGO_DB: ${MONGO_DB}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      SPRING_PROFILES_ACTIVE: "prod"
+    ports:
+      - "8080:8080"   # másik porton, hogy ne ütközzenek a dev-vel
+#    volumes:
+    # nincs volume, mert image-ben fut a buildelt jar
